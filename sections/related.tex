@@ -1,0 +1,105 @@
+\section{Related work}
+We performed an extensive literature survey, and we introduce important works in this section. First, we define the following key terms:
+\begin{enumerate}
+\item A \textit{table} means a relation or table of a relational database. It consists of attributes (i.e., columns) and records (i.e., rows).
+\item An \textit{identifier} is an attribute that assigns a unique number to each record, such as social security number (SSN).
+\item A \textit{quasi-identifier} (QID) is not a unique identifier; however, a combination of QIDs is occasionally sufficient to identify a record, such as occupation, age, and ZIP code.
+\item \textit{Sensitive attribute (information)} generally means all other attributes except for identifiers and QIDs, such as grade point average (GPA), salary, disease status, and so on.
+\end{enumerate}
+
+\subsection{Privacy Preserving Method}
+% Datasets that contain sensitive information of individuals, such as medical or census information, are being widely produced by organizations for commercial or research purposes, aided by big data technology. Owners (or collectors) frequently share such data with partners or release these data to the public. For instance, a health institute may release lab results and patient admission history, while a government organization may decide to share payroll information of its employees after anonymization. Although these datasets are very valuable and critical for research, disclosing the sensitive information of individuals is harmful and occasionally illegal. In fact, these datasets can be starting points for adversarial attacks that attempt to uncover the identities of individuals and their sensitive information.
+
+Protecting the privacy of individuals while maintaining the usability (e.g., analytical purposes) of the published data has been an active research area over the past two decades~\cite{ayala-rivera_systematic_2014}.  To protect against re-identification attacks, various privacy models have been introduced. The re-identification attack for an individual (or a group of people) can be conducted by linking some set of attributes in the published dataset with an external dataset to identify the target individual or groups. This set of attributes, such as ZIP code, birthday, gender, and so on, are called QIDs. The goal of many privacy preserving techniques is to transform QIDs in such a way that they cannot be linked together to identify a particular person.
+
+One of the most fundamental and widely adopted privacy models is \textit{$k$-anonymity} introduced by Samarati and Sweeney~\cite{samarati1998protecting}. This model introduced the concept of the \textit{equivalence class} of records, where one record is similar to at least $k-1$ other records in the same equivalence class with respect to their QIDs. In other words, it modifies QIDs, and records with the same modified QIDs constitute an equivalence class (see Tables~\ref{T:mot_origintable} and~\ref{T:mot_anonymized}). Although $k$-anonymity is an NP-hard problem~\cite{meyerson_complexity_2004}, it can be implemented using heuristic methods such as $k$-optimize~\cite{bayardo_data_2005}, Datafly~\cite{samarati1998protecting}, Incognito~\cite{lefevre_incognito:_2005}, or Mondarian~\cite{LeFevre:2006:MMK:1129754.1129879}. 
+It has also been considered as a basis for introducing similar or alternative privacy preserving models, such as $k$-concealment~\cite{tassa_k-concealment:_2012}, ($a$,$k$)-anonymity~\cite{wong__2006} or $p$-sensitive $k$-anonymity~\cite{truta_privacy_2006}. More detailed descriptions can be found in~\cite{fung_privacy-preserving_2010, domingo-ferrer_comparing_2001} and~\cite{aggarwal_general_2008}.
+
+As we describe below, there exist other types of attacks, and  other notions have been proposed to mitigate them. Nonetheless, $k$-anonymity is still used in the healthcare world, in large part because of its simplicity and utility preservation compared to other definitions\footnote{See, for example, the webite \url{https://desfontain.es/privacy/k-anonymity.html}}.
+% Moreover, $k$-anonymity has also been adopted in other domains, such as crowd-sourcing databases~\cite{wu_k-anonymity_2014}, location-based data~\cite{niu_achieving_2014,gedik_protecting_2008}, wireless traffic~\cite{caballero-gil_providing_2016} and social networks~\cite{wu_survey_2010}.
+
+Although $k$-anonymity reduces the possibility of re-identification attacks, adversaries can still obtain information about other sensitive attributes of that table (because existing methods focus on modifying QIDs after leaving other sensitive information unaltered). This sensitive information enables adversaries to conduct homogeneity and background knowledge attacks~\cite{machanavajjhala_l-diversity:_2007}, also known as \textit{attribute disclosure}. To protect against these attacks, the authors of~\cite{machanavajjhala_l-diversity:_2007} introduced \textit{$l$-diversity} to ensure that the sensitive attributes of each equivalence class have at least $l$ different values. The $l$-diversity is effective in protecting categorical attributes (because continuous attributes with $l$ diverse values are not sufficient) but is still vulnerable in cases where the adversaries know the global distributions of sensitive attributes.
+
+Consequently, the authors of~\cite{li_t-closeness:_2007} introduced \textit{$t$-closeness} to ensure that the distributions of sensitive attributes in each equivalence class are similar to their global distributions. $t$ is the allowed maximum difference between local and global distributions. In general, earth mover's distance (EMD) is used to measure the difference (distance) between two probabilistic distributions. $\delta$-disclosure is also a concept to protect sensitive attributes from re-identification attacks~\cite{Brickell:2008:CPD:1401890.1401904}. However, it assumes more stronger attackers who know about target individuals' QIDs and attempt to identify their sensitive attributes from anonymized tables. Note that $t$-closeness and $\delta$-disclosure do not change sensitive values but construct equivalence classes in a way that reduces the possibility of re-identification attacks.
+
+Perturbation is also very popular for statistical disclosure control (SDC)~\cite{series/ads/Domingo-Ferrer08}. Adding additive or multiplicative noise to continuous values is one of the most popular perturbation techniques. However, it is also very popular to study the removal of noise and recovery of the original data in many related fields~\cite{agrawal_design_2001}. Thus, other perturbation techniques, such as micro-aggregation and post-randomization method (PRAM), have been also developed, and they can perturb continuous and categorical values, respectively. In particular, PRAM mainly aims at modifying sensitive attributes.
+
+Existing data anonymization/perturbation methods provide reasonable model compatibility in many cases because they do not actively modify sensitive attributes as in Tables~\ref{T:mot_origintable} and~\ref{T:mot_anonymized}. However, there also exits a non-trivial possibility of information leakage. In general, their balance between privacy level and model compatibility is not satisfactory --- we will show this in our experiments.
+
+One more related privacy concept is $\epsilon$-differential private data release~\cite{Mohammed:2011:DPD:2020408.2020487}. $\epsilon$-differentially private data is created by drawing perturbed samples (more precisely, $\epsilon$-differential samples) from the original dataset. In general, data utility is significantly decreased after this process.
+
+Many methods for privacy preserving data mining (PPDM) have been also proposed~\cite{Lindell:2000:PPD:646765.704129}. In many cases, they discuss the situations where multiple parties having own confidential databases wish to run a data mining algorithm on the union of the databases without sharing them. Thus, their focus is different from us.
+
+A few researchers have focused on generating synthetic data~\cite{Aggarwal2004}. However, such methods are designed on top of several statistical assumptions about data for technical convenience and without any attention to the semantic integrity. Our deep learning-based method can generate semantically correct records after learning any complicated table without relying on any statistical assumption about data. Because it is very easy to detect that a table is synthesized after identifying semantically incorrect records, our contributions are significant.
+
+Synthetic data generation is also popular for generating artificial testing samples for benchmarks or similar tasks~\cite{7796926}. However, these methods depend on parameters provided by users, such as the number of samples, the number and density of clusters of samples, and so forth, without training.
+% It is clear that anonymization provides better model compatibility (see the Introduction for the definition of model compatibility) than perturbation in many cases because it does not change sensitive values. 
+
+% > good Papers: 
+% > 1- Protecting Privacy in Large Datasets—First We Assess the Risk; Then We Fuzzy the Data : Using the ARX attack scenarios to measure the success of the anonymization process.
+% > This paper adds random noise to data (e.g., random values between -3,+3 to DOB for each individual )and then
+% > 2- (epislon-differential privacy):Differentially Private Data Release for Data Mining
+% > Uses DiffGen  algorithm for ϵ -Differential Privacy 
+% > 3-An Improved Data Sanitization Algorithm for Privacy Preserving Medical Data Publishing
+% >  AdiffP to ensure  ϵ -Differential Privacy 
+% > 4- Enhancing data utility in differential privacy via microaggregation-based kk-anonymity
+% >  5- Privacy-Preserving Data Mining Models and Algorithms: Describes the Different Perturbative and non-perturbative methods
+% > 6- An Improved Data Sanitization Algorithm for Privacy Preserving Medical Data Publishing
+% > Differential Identifiability∗ Jaewoo Lee
+% > Differentially Private Data Release for Data Mining
+% > 7- Differential Private Noise Adding Mechanism: Basic
+% > Conditions and its Application
+% > 8-From t-closeness to differential privacy and vice versa in data anonymization
+% > 9-De-anonymization attack on geolocated data
+
+\subsection{Risk Evaluation Methods}
+Developing privacy risk evaluation methods is also an independent research topic. %There are several methods. 
+However, 
+%we could not apply most of existing risk evaluation methods since 
+these methods are all designed for anonymization and perturbation. Three popular risk evaluation metrics are based on the prosecutor, journalist, and marketer attacker models~\cite{Dankar:2010:MEM:1754239.1754271}. They measure the percentage of re-identified records given a certain attacker model. In the prosecutor model, the attacker already knows about QIDs of all target people and tries to uncover their sensitive attributes. Thus, the successful re-identification probability for a certain person $p$ is simply calculated as
+\begin{equation}
+risk(p) = \frac{1}{\textrm{the size of the matching equivalence class to $p$}}.
+\end{equation}
+
+In the journalist and marketer models, the attacker does not have specific targets but does his/her best to re-identify as many records as possible using available background information. In general, these two models are weaker than the prosecutor model in several points and they also require equivalence classes to calculate risk scores. In our method, we do not create any equivalence class but disclose full synthetic values. Therefore, this risk evaluation cannot be applied.
+
+The authors of~\cite{Truta:2004:AGD:1029179.1029202} proposed a risk evaluation method based on entropy. Its formula requires the average number of correct recalls in the one-to-one correspondence between the original and anonymized tables. This cannot be measured for our method.
+
+\subsection{Generative Adversarial Network}
+Generative adversarial networks (GANs) are a recently developed generative model~\cite{goodfellow2014generative} to produce synthetic images or texts after being trained.  The learning process in the model is based on two generator ($G$) and one discriminator ($D$) neural networks playing the following zero-sum minimax (i.e., adversarial) game:
+\begin{equation}\label{eq:gan}\begin{aligned}
+\min_{G} \max_{D} V(G,D) =  & \mathbb{E}[\log D(x)]_{x \sim p_{data}(x)} \\
+  & + \mathbb{E}[\log (1-D(G(z)))]_{z \sim p(z)},
+\end{aligned}\end{equation}
+where $p(z)$ is a prior distribution of latent vector $z$, $G(z)$ is a generator function, and $D(\cdot)$ is a discriminator function whose output spans $[0,1]$. $D(x)=0$ (resp. $D(x)=1$) indicates that the discriminator $D$ classifies a sample $x$ as \textit{generated} (resp. \textit{real}).
+
+\begin{algorithm2e}[!t]
+% \footnotesize
+\DontPrintSemicolon
+\hrule
+\KwIn{Real Samples: $\{x_1, x_2, \cdots\} \sim p(x)$}
+\KwOut{a Generative Model $G$}
+\hrule
+%{\color{blue}//Initialize a generator $G$ and discriminator $D$}\;
+$G \gets$ a generative neural network\;
+$D \gets$ a discriminator neural network\;
+\While{until convergence of loss values} {
+Create a mini-batch of real samples $X = \{x_1,\cdots,x_n\}$\;
+Create a set of latent vector inputs $Z = \{z_1,\cdots,z_n\}$\;
+Train the discriminator $D$ by maximizing Equation~\eqref{eq:gan}\;\label{alg:dis}
+Train the generator $G$ by minimizing Equation~\eqref{eq:gan};
+}
+\Return $G$\;
+\hrule
+\caption{\strut Training algorithm of GANs\label{alg:gan}}
+\end{algorithm2e}
+
+Algorithm~\ref{alg:gan} shows the general training concept of GANs. $G$ and $D$ can be any form of neural networks. The discriminator $D$ attempts to maximize the objective, whereas the generator $G$ attempts to minimize the objective. In other words, the discriminator $D$ attempts to distinguish between real and generated samples, while the generator $G$ attempts to generate realistic fake samples that the discriminator $D$ cannot distinguish from real samples. One can also consider the discriminator as a teacher and the generator as a student. The teacher provides feedback to the student on the quality of work.
+
+% GANs have presented observable impacts in different areas, such as generating synthesized images~\cite{salimans_2016_improved,denton_2015_deep}, autonomous driving~\cite{ghosh_2016_sad}, image steganography~\cite{volkhonskiy_2016_generative} and video prediction.
+
+%Among 
+Although there are many variations, we design our table-GAN methods on DCGAN~\cite{radford_dcgan_2015} because it is considered to be the most mature model~\cite{DBLP:journals/corr/ArjovskyB17}, and many other GANs rely on its neural network architectures. 
+%We also design our table-GAN based on it.
+
+One recent study applied GANs based on \emph{recurrent neural network (RNN) architectures} to synthesize only discrete values in electronic health records (EHR)~\cite{DBLP:journals/corr/ChoiBMDSS17}. Our table-GAN aims at synthesizing general relational databases based on \emph{convolutional neural network (CNN) architectures}. RNNs (resp. CNNs) are widely used for natural language processing (resp. computer vision). There is one famous example describing their difference. In computer vision, Red $-$ $\tau$ = Pink\footnote{Recall that colors are basically numbers in the RGB code space.}, where $\tau$ is a small number, is semantically valid (i.e., continuous data type) but in natural language processing, Penguin $-$ $\tau$ = Ostrich cannot be defined (i.e., discrete data type). Thus, \cite{DBLP:journals/corr/ChoiBMDSS17} cannot synthesize general relational databases. However, our method can generate both continuous and discrete values after some tricks.

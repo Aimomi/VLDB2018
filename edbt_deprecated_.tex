@@ -1,0 +1,183 @@
+\documentclass[sigconf,edbt]{acmart-edbt2018}
+\usepackage{times,amsmath,epsfig}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{algorithm} 
+\usepackage{algorithmic}  
+\usepackage[algo2e,linesnumbered]{algorithm2e} 
+\usepackage{amsfonts}
+\usepackage{amsbsy}
+\usepackage{graphicx}
+\usepackage{physics}
+\usepackage{subfigure}
+\usepackage{booktabs} % For formal tables
+% \usepackage{ngerman}
+\graphicspath{ {images/} }
+
+\newcommand{\cs}[1]{\texttt{\char`\\#1}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\f}{\mathbf{f}}
+\newcommand{\Y}{\mathcal{Y}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\Set}{\mathcal{S}}
+\newcommand{\Loss}{\mathcal{L}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\K}{\mathfrak{K}}
+\newcommand{\x}{\mathrm{x}}
+\newcommand*\Bell{\ensuremath{\boldsymbol\ell}}
+% Copyright
+\setcopyright{rightsretained}
+\setlength{\tabcolsep}{2pt}
+\setlength{\textfloatsep}{9pt}
+% DOI 
+\acmDOI{}
+
+% ISBN
+\acmISBN{978-3-89318-078-3}
+
+%Conference
+\acmConference[ASIACCS 2018]{13st ACM ASIA Conference on Information, Computer and Communications Security (ASIACCS)}{June 4-8, 2018}{Incheon, Korea} 
+\acmYear{2018}
+
+\settopmatter{printacmref=false, printccs=false, printfolios=false}
+
+\pagestyle{plain} % removes running headers
+
+\begin{document}
+\title{Data Synthesis based on Generative Adversarial Networks}
+% \titlenote{Produces the permission block, and copyright information}
+% \subtitle{Extended Abstract}
+% \subtitlenote{The full version of the author's guide is available as
+%   \texttt{acmart.pdf} document}
+  
+
+% \author{Noseong Park}
+% \affiliation{%
+%   \institution{University of North Carolina, Charlotte}
+% %   \city{Charlotte} 
+% %   \state{North Carolina} 
+% }
+% \email{npark2@uncc.edu}
+
+% \author{Mahmoud Mohammadi}
+% \affiliation{%
+%   \institution{University of North Carolina, Charlotte}
+% %   \city{Charlotte} 
+% %   \state{North Carolina} 
+% }
+% \email{mmoham12@uncc.edu}
+
+% \author{Kshitij Gorde}
+% \affiliation{%
+%     \institution{University of North Carolina, Charlotte}
+% %   \city{Charlotte} 
+% %   \state{North Carolina}
+% }
+% \email{kgorde@uncc.edu}
+
+% \author{Sushil Jajodia}
+% \affiliation{%
+%     \institution{George Mason University}
+% %   \city{Fairfax} 
+% %   \state{Virginia}
+% }
+% \email{jajodia@gmu.edu}
+
+% The default list of authors is too long for headers}
+% \renewcommand{\shortauthors}{B. Trovato et al.}
+\renewcommand{\shortauthors}{XXXX et al.}
+
+
+\begin{abstract}
+Privacy is an important concern for our society where sharing data with partners or releasing data to the
+public is a frequent occurrence. Some of the techniques that are being used to achieve privacy are to remove
+identifiers, alter quasi-identifiers, and perturb values. Unfortunately, these approaches suffer from two
+limitations. First, it has been shown that private information can still be leaked if attackers possess
+some background knowledge or other information sources. Second, they do not take into account the
+adverse impact these methods will have on the utility of the released data.
+
+In this paper, we propose a method that meets both requirements. Our method called \textit{table-GAN}, using generative adversarial networks (GANs), synthesizes fake tables that are statistically similar to the original table yet do not incur information leakage.
+
+We show that the machine learning models trained using our synthetic tables exhibit performance that
+is similar to that of models trained using the original table for unknown testing cases. We call this
+property \textit{model compatibility}. We believe that anonymization/perturbation/synthesis methods
+without model compatibility are rather meaningless.
+
+We used four real-world datasets from four
+different domains for our experiments and conducted in-depth comparisons with state-of- the-art
+anonymization\slash perturbation\slash generation techniques. Throughout our experiments, only our method consistently shows balance between privacy level and model compatibility.
+% Even after removing identifiers, altering quasi-identifiers, and perturbing values, private information can be leaked if attackers possess some background knowledge or other information sources.
+
+% We propose a method to synthesize fake tables using generative adversarial networks (GANs). Our method, which is called \textit{table-GAN}, is trained using the original table and generates synthetic tables that are statistically similar to the original table but that do not incur information leakage.
+
+% We also show that machine learning models trained using the synthetic tables exhibit performance that is similar to that of models trained using the original table for unknown testing cases. We call this property \textit{model compatibility}. Any anonymization/perturbation/synthesis methods without model compatibility are rather meaningless.
+
+% In general, a high (resp. low) privacy level implies a low (resp. high) model compatibility (e.g., a table after substantial modifications will not leak any real information, but its model compatibility will be very poor). Thus, the balance between privacy level and model compatibility is very important.
+
+% We used four real-world datasets from four different domains for our experiments and conducted in-depth comparisons with state-of-the-art anonymization/perturbation/generation techniques.  Our method presents the best trade-off between privacy and model compatibility.
+\end{abstract}
+
+%
+% % The code below should be generated by the tool at
+% % http://dl.acm.org/ccs.cfm
+% % Please copy and paste the code instead of the example below. 
+% %
+% \begin{CCSXML}
+% <ccs2012>
+%  <concept>
+%   <concept_id>10010520.10010553.10010562</concept_id>
+%   <concept_desc>Computer systems organization~Embedded systems</concept_desc>
+%   <concept_significance>500</concept_significance>
+%  </concept>
+%  <concept>
+%   <concept_id>10010520.10010575.10010755</concept_id>
+%   <concept_desc>Computer systems organization~Redundancy</concept_desc>
+%   <concept_significance>300</concept_significance>
+%  </concept>
+%  <concept>
+%   <concept_id>10010520.10010553.10010554</concept_id>
+%   <concept_desc>Computer systems organization~Robotics</concept_desc>
+%   <concept_significance>100</concept_significance>
+%  </concept>
+%  <concept>
+%   <concept_id>10003033.10003083.10003095</concept_id>
+%   <concept_desc>Networks~Network reliability</concept_desc>
+%   <concept_significance>100</concept_significance>
+%  </concept>
+% </ccs2012>  
+% \end{CCSXML}
+% 
+% \ccsdesc[500]{Computer systems organization~Embedded systems}
+% \ccsdesc[300]{Computer systems organization~Redundancy}
+% \ccsdesc{Computer systems organization~Robotics}
+% \ccsdesc[100]{Networks~Network reliability}
+
+
+% \keywords{ACM proceedings, \LaTeX, text tagging}
+
+
+\maketitle
+
+\input{sections/intro.tex}
+\input{sections/related.tex}
+\input{sections/motivation.tex}
+\input{sections/method.tex}
+\input{sections/experiments.tex}
+
+% \section{Final Remarks and Future Work}
+% Existing anonymization methods show good model compatibility (except the classification tests in the Health and LACity datasets). However, their privacy level is weaker than table-GAN, as shown in the DCR tests.
+
+% Our table-GAN shows very stable model compatibility in all datasets and its privacy level is much higher than other baseline methods. We will extend our method to process all data types of relation databases.
+
+\section{Conclusion}
+We proposed a method named table-GAN to synthesize fake tables that are statistically similar to the original table. Moreover, the synthetic tables generated using our method show model compatibility that is as good as that of anonymization techniques that do not change sensitive attributes. To our knowledge, our method is the first attempt to synthesize general relational databases using deep learning techniques.
+
+We conducted thorough experiments using four real-world datasets that have at most millions of records and tens of attributes. The runtime to synthesize such large databases is approximately 20 minutes with our entry-level servers due to the advancements in GPU technology. During statistical, distance to the closest record, and model compatibility tests, table-GAN exhibits the best trade-off between privacy level and model compatibility.
+
+\bibliographystyle{IEEEtran}
+\bibliography{gan,Zotero}
+
+% \section*{Appendix}
+% \input{sections/attributes.tex}
+
+\end{document}
